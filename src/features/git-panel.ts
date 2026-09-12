@@ -1,10 +1,11 @@
-import { SidebarPanel, html, app } from '@typora-community-plugin/core'
+import { SidebarPanel, html, app, type WorkspaceTabs } from '@typora-community-plugin/core'
 import type GitPlugin from '../main'
 import {
   GitClient, GitError,
   type GitFileInfo, type GitFileStatus, type GitState,
 } from './git-client'
 import { buildGitTree, collectFilePaths, type GitTreeNode } from './git-file-tree'
+import { DiffView, type DiffViewMode } from './diff-view'
 
 type Jq = ReturnType<typeof $>
 type Section = 'staged' | 'worktree'
@@ -400,9 +401,41 @@ export class GitPanel extends SidebarPanel {
 
     if (item.dataset.kind === 'dir') {
       this._toggleDir(item)
-    } else {
-      void app.openFile(this.client.vaultPathOf(item.dataset.path!)).catch(() => { })
+      return
     }
+
+    const file = this.nodeIndex.get(item.dataset.key!)?.file
+    if (!file) return
+
+    // Only unstaged changes get a dedicated git view: modified files are shown
+    // as a diff, deleted files as a read-only Markdown preview read from git.
+    // New files keep being opened as regular Markdown files.
+    if (this._sectionOf(item) === 'worktree' && file.status === 'M') {
+      this._openGitView(file.path, 'diff')
+    } else if (this._sectionOf(item) === 'worktree' && file.status === 'D') {
+      this._openGitView(file.path, 'content')
+    } else {
+      void app.openFile(this.client.vaultPathOf(file.path)).catch(() => { })
+    }
+  }
+
+  private _openGitView(file: string, mode: DiffViewMode) {
+    const tabs = app.workspace.activeLeaf?.parent as WorkspaceTabs | null
+    if (!tabs?.toggleTab) return
+
+    const id = `typ://${DiffView.type}/${mode}/${file}`
+    const existing = tabs.findLeaf(leaf => leaf.state.path === id)
+    if (existing) {
+      tabs.toggleTab(id)
+      app.workspace.activeLeaf = existing
+      return
+    }
+
+    const leaf = app.workspace.createLeaf({
+      type: DiffView.type,
+      state: { path: id, file, mode },
+    })
+    tabs.appendChild(leaf)
   }
 
   private _toggleDir(item: HTMLElement) {

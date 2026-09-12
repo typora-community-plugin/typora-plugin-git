@@ -12,6 +12,8 @@
   "commit": "Commit staged files...",
   "commitButton": "Commit",
   "openFile": "Open file in editor",
+  "diffEmpty": "No unstaged changes",
+  "diffUnavailable": "Unable to read the content from git.",
   "noStaged": "No staged changes",
   "noChanges": "No changes",
   "stageFile": "Stage file",

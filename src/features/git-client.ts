@@ -199,6 +199,29 @@ export class GitClient {
     }
   }
 
+  /** repo-root-relative path of a vault-relative file (required by `<rev>:<path>`) */
+  private toRepoRelative(vaultRelativePath: string): string {
+    const clean = vaultRelativePath.replace(/\\/g, '/')
+    return this.repoPrefix ? this.repoPrefix + '/' + clean : clean
+  }
+
+  /** unified diff of the unstaged changes of a vault-relative file (full context) */
+  async diff(vaultRelativePath: string): Promise<string> {
+    return this.run([
+      '-c', 'core.quotePath=false',
+      'diff', '--no-color', '--unified=999999', '--', vaultRelativePath,
+    ])
+  }
+
+  /**
+   * Content of a vault-relative file at a revision (defaults to `HEAD`).
+   * Used to display files that no longer exist in the working tree.
+   */
+  async show(vaultRelativePath: string, rev = 'HEAD'): Promise<string> {
+    if (!(await this.resolveRepo())) throw new GitError('not-a-repo')
+    return this.run(['show', `${rev}:${this.toRepoRelative(vaultRelativePath)}`])
+  }
+
   /** absolute path of a vault-relative file */
   vaultPathOf(vaultRelativePath: string): string {
     return path.join(this.vaultPath(), vaultRelativePath)

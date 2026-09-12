@@ -2,6 +2,7 @@ import './style.scss'
 import * as Locale from './locales/lang.en.json'
 import { I18n, path, Plugin, PluginSettings } from '@typora-community-plugin/core'
 import { GitPanel } from './features/git-panel'
+import { DiffView } from './features/diff-view'
 import { GitSettingTab } from './setting-tab'
 
 export interface GitSettings {
@@ -24,6 +25,9 @@ export default class GitPlugin extends Plugin<GitSettings> {
 
     this.register(this.app.workspace.sidebar.addPanel(panel))
     this.register(() => panel.onunload())
+
+    this.register(this.app.viewManager.registerView(
+      DiffView.type, (leaf) => new DiffView(leaf, this)))
 
     this.registerSettingTab(new GitSettingTab(this))
     this.register(this.settings.onChange('refreshInterval', () => panel.onSettingsChanged()))

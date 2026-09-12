@@ -1,0 +1,36 @@
+
+/* let the active leaf host a full-height git diff view */
+.typ-workspace-tabs>.typ-workspace-tab-content>.typ-workspace-leaf.typ-git-diff-leaf.mod-active {
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.typ-git-diff-view {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.typ-git-diff-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+
+  .CodeMirror {
+    height: 100%;
+
+    .CodeMirror-scroll {
+      overflow-y: auto;
+    }
+
+    .cm-positive {
+      background-color: rgba(63, 164, 106, .18);
+    }
+
+    .cm-negative {
+      background-color: rgba(208, 90, 90, .18);
+    }
+  }
+}

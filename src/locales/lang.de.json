@@ -12,6 +12,8 @@
   "commit": "Gestagte Dateien committen...",
   "commitButton": "Committen",
   "openFile": "Datei im Editor öffnen",
+  "diffEmpty": "Keine nicht bereitgestellten Änderungen",
+  "diffUnavailable": "Inhalt konnte nicht aus Git gelesen werden.",
   "noStaged": "Keine bereitgestellten Änderungen",
   "noChanges": "Keine Änderungen",
   "stageFile": "Datei stagen",

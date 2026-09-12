@@ -12,6 +12,8 @@
   "commit": "提交已暂存的文件...",
   "commitButton": "提交",
   "openFile": "在编辑器中打开",
+  "diffEmpty": "没有未暂存的更改",
+  "diffUnavailable": "无法从 git 读取内容。",
   "noStaged": "没有已暂存的更改",
   "noChanges": "没有更改",
   "stageFile": "暂存文件",

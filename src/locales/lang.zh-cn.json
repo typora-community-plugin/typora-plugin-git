@@ -1,0 +1,20 @@
+{
+  "ribbonGit": "Git",
+  "staged": "已暂存",
+  "workingTree": "更改",
+  "noRepoHint": "当前文件夹不是 git 仓库。",
+  "gitNotFound": "未找到 `git`，请安装 Git 或将其加入 PATH。",
+  "errorPrefix": "Git 错误：",
+  "refresh": "刷新状态",
+  "stageAll": "暂存全部更改",
+  "unstageAll": "取消暂存全部文件",
+  "commit": "提交已暂存的文件...",
+  "commitButton": "提交",
+  "openFile": "在编辑器中打开",
+  "noStaged": "没有已暂存的更改",
+  "noChanges": "没有更改",
+  "stageFile": "暂存文件",
+  "unstageFile": "取消暂存文件",
+  "stageFolder": "暂存文件夹",
+  "unstageFolder": "取消暂存文件夹"
+}

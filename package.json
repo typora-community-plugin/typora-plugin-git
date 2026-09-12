@@ -1,8 +1,8 @@
 {
   "private": true,
-  "name": "typora-plugin-example",
-  "version": "",
-  "description": "",
+  "name": "typora-plugin-git",
+  "version": "1.0.0",
+  "description": "A Git sidebar for Typora: view and stage/unstage files.",
   "type": "module",
   "main": "",
   "scripts": {

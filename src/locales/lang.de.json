@@ -1,0 +1,20 @@
+{
+  "ribbonGit": "Git",
+  "staged": "Bereitgestellt",
+  "workingTree": "Änderungen",
+  "noRepoHint": "Der aktuelle Ordner ist kein Git-Repository.",
+  "gitNotFound": "`git` wurde im PATH nicht gefunden. Bitte Git installieren oder den Pfad einrichten.",
+  "errorPrefix": "Git-Fehler:",
+  "refresh": "Status aktualisieren",
+  "stageAll": "Alle Änderungen stagen",
+  "unstageAll": "Alle Dateien entstagen",
+  "commit": "Gestagte Dateien committen...",
+  "commitButton": "Committen",
+  "openFile": "Datei im Editor öffnen",
+  "noStaged": "Keine bereitgestellten Änderungen",
+  "noChanges": "Keine Änderungen",
+  "stageFile": "Datei stagen",
+  "unstageFile": "Datei entstagen",
+  "stageFolder": "Ordner stagen",
+  "unstageFolder": "Ordner entstagen"
+}

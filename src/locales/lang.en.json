@@ -1,0 +1,20 @@
+{
+  "ribbonGit": "Git",
+  "staged": "Staged",
+  "workingTree": "Changes",
+  "noRepoHint": "Current folder is not a git repository.",
+  "gitNotFound": "`git` was not found in PATH. Please install Git or configure its path.",
+  "errorPrefix": "Git error:",
+  "refresh": "Refresh status",
+  "stageAll": "Stage all changes",
+  "unstageAll": "Unstage all files",
+  "commit": "Commit staged files...",
+  "commitButton": "Commit",
+  "openFile": "Open file in editor",
+  "noStaged": "No staged changes",
+  "noChanges": "No changes",
+  "stageFile": "Stage file",
+  "unstageFile": "Unstage file",
+  "stageFolder": "Stage folder",
+  "unstageFolder": "Unstage folder"
+}

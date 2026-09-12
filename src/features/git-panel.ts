@@ -42,10 +42,17 @@ export class GitPanel extends SidebarPanel {
   private branchEl!: Jq
   private busy = false
   private refreshTimer: any
+  private pollTimer: any
   private refreshSeq = 0
+  private panelShown = false
   private current: GitState | null = null
   private collapsed = new Set<string>()
   private nodeIndex = new Map<string, GitTreeNode>()
+
+  private onActivityChange = () => {
+    this._updatePolling()
+    if (this._isActive()) void this._refresh()
+  }
 
   constructor(private plugin: GitPlugin) {
     super()
@@ -108,27 +115,44 @@ export class GitPanel extends SidebarPanel {
       )
       .on('click', '.typ-git-action', (event: any) => this._onActionClick(event))
       .on('click', '.typ-git-tree-item', (event: any) => this._onItemClick(event))
-      .on('click', '.typ-git-refresh', () => this.refresh())
+      .on('click', '.typ-git-refresh', () => void this._refresh())
       .on('click', '.typ-git-stage-all', () => this._mutateAll('stage'))
       .on('click', '.typ-git-unstage-all', () => this._mutateAll('unstage'))
       .on('click', '.typ-git-commit-btn', () => void this._commit())
       .get(0) as HTMLElement
+
+    document.addEventListener('visibilitychange', this.onActivityChange)
+    window.addEventListener('focus', this.onActivityChange)
+    window.addEventListener('blur', this.onActivityChange)
   }
 
   onload() {
-    this.refresh()
+    void this._refresh()
   }
 
   onshow() {
-    this.refresh()
+    this.panelShown = true
+    void this._refresh()
+    this._updatePolling()
   }
 
   onhide() {
+    this.panelShown = false
+    this._updatePolling()
     this._clearTimer()
   }
 
   onunload() {
+    document.removeEventListener('visibilitychange', this.onActivityChange)
+    window.removeEventListener('focus', this.onActivityChange)
+    window.removeEventListener('blur', this.onActivityChange)
+    this._stopPolling()
     this._clearTimer()
+  }
+
+  /** restart the polling loop after the refresh interval setting changed */
+  onSettingsChanged() {
+    this._updatePolling()
   }
 
   refresh() {
@@ -136,13 +160,52 @@ export class GitPanel extends SidebarPanel {
     this.refreshTimer = setTimeout(() => {
       this.refreshTimer = undefined
       void this._refresh()
-    }, 300)
+    }, this._getRefreshInterval())
   }
 
   private _clearTimer() {
     if (this.refreshTimer) {
       clearTimeout(this.refreshTimer)
       this.refreshTimer = undefined
+    }
+  }
+
+  private _getRefreshInterval(): number {
+    const interval = Number(this.plugin.settings.get('refreshInterval'))
+    return Number.isFinite(interval) && interval >= 100 ? interval : 1000
+  }
+
+  /** poll only while the panel is visible inside a focused Typora window */
+  private _isActive(): boolean {
+    return this.panelShown
+      && document.visibilityState === 'visible'
+      && (typeof document.hasFocus !== 'function' || document.hasFocus())
+  }
+
+  private _updatePolling() {
+    if (this._isActive()) this._startPolling()
+    else this._stopPolling()
+  }
+
+  private _startPolling() {
+    this._stopPolling()
+    this._schedulePoll()
+  }
+
+  private _schedulePoll() {
+    this.pollTimer = setTimeout(() => {
+      this.pollTimer = undefined
+      if (!this._isActive()) return
+      void this._refresh().finally(() => {
+        if (this._isActive()) this._schedulePoll()
+      })
+    }, this._getRefreshInterval())
+  }
+
+  private _stopPolling() {
+    if (this.pollTimer) {
+      clearTimeout(this.pollTimer)
+      this.pollTimer = undefined
     }
   }
 
@@ -377,7 +440,7 @@ export class GitPanel extends SidebarPanel {
     } finally {
       this.busy = false
     }
-    this.refresh()
+    void this._refresh()
     return ok
   }
 }

@@ -17,5 +17,7 @@
   "stageFile": "Datei stagen",
   "unstageFile": "Datei entstagen",
   "stageFolder": "Ordner stagen",
-  "unstageFolder": "Ordner entstagen"
+  "unstageFolder": "Ordner entstagen",
+  "refreshInterval": "Aktualisierungsintervall",
+  "refreshIntervalDesc": "Intervall in Millisekunden, in dem der Git-Status aktualisiert wird. Bei inaktivem Typora wird die Aktualisierung pausiert."
 }

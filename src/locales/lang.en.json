@@ -17,5 +17,7 @@
   "stageFile": "Stage file",
   "unstageFile": "Unstage file",
   "stageFolder": "Stage folder",
-  "unstageFolder": "Unstage folder"
+  "unstageFolder": "Unstage folder",
+  "refreshInterval": "Refresh interval",
+  "refreshIntervalDesc": "How often the panel refreshes the git status, in milliseconds. Refreshing pauses while Typora is inactive."
 }

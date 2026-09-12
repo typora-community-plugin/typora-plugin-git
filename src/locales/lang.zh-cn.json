@@ -17,5 +17,7 @@
   "stageFile": "暂存文件",
   "unstageFile": "取消暂存文件",
   "stageFolder": "暂存文件夹",
-  "unstageFolder": "取消暂存文件夹"
+  "unstageFolder": "取消暂存文件夹",
+  "refreshInterval": "刷新间隔",
+  "refreshIntervalDesc": "面板刷新 git 状态的间隔（毫秒）。Typora 未处于活动状态时会暂停刷新。"
 }

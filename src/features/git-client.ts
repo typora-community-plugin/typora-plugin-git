@@ -160,9 +160,12 @@ export class GitClient {
 
     // `.` pathspec limits the report to the vault subtree, both when the vault
     // is the repo root and when it is nested in a larger repository.
+    // `--untracked-files=all` lists every untracked file individually instead of
+    // collapsing new folders into a single "dir/" entry, so the tree can expand
+    // to arbitrary depth (and stage/unstage individual files inside them).
     const raw = await this.run([
       '-c', 'core.quotePath=false',
-      'status', '--porcelain=v1', '-z',
+      'status', '--porcelain=v1', '-z', '--untracked-files=all',
       '--', '.',
     ])
 

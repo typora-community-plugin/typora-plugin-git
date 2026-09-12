@@ -6,7 +6,7 @@
 
   --typ-git-primary: var(--primary-color, #09b);
   --typ-git-on-primary: var(--primary-btn-text-color, #fff);
-  --typ-git-border: rgb(var(--typ-color-gray-2));
+  --typ-git-border: rgb(var(--typ-color-gray-1));
   --typ-git-muted: rgb(var(--typ-color-gray-3));
   --typ-git-hover: var(--item-hover-bg-color, rgba(var(--typ-color-gray-1), .5));
 }
@@ -134,6 +134,40 @@
     position: sticky;
     top: 0;
     z-index: 1;
+  }
+
+  /* a collapsed section keeps only its header */
+  &.is-collapsed {
+    flex: 0 0 auto;
+    overflow: hidden;
+
+    > .typ-git-list {
+      display: none;
+    }
+  }
+}
+
+.typ-git-section-header {
+  cursor: pointer;
+  user-select: none;
+  outline-offset: -2px;
+
+  &:hover {
+    color: inherit;
+    background-color: var(--item-hover-bg-color, rgba(var(--typ-color-gray-1), .35));
+  }
+
+  .typ-git-section-chevron {
+    width: .8em;
+    text-align: center;
+    font-size: .9em;
+    transition: transform .12s ease;
+  }
+
+  .typ-git-section.is-collapsed & {
+    .typ-git-section-chevron {
+      transform: rotate(-90deg);
+    }
   }
 }
 

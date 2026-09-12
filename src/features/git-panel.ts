@@ -71,7 +71,9 @@ export class GitPanel extends SidebarPanel {
     })
 
     const sectionHeader = (label: string, countEl: Jq): Jq =>
-      $('<h3>')
+      $('<h3 class="typ-git-section-header" aria-expanded="true">')
+        .attr('tabindex', '0')
+        .append($('<i class="fa fa-chevron-down typ-git-section-chevron"></i>'))
         .append($('<span>').text(label))
         .append(countEl)
 
@@ -116,6 +118,18 @@ export class GitPanel extends SidebarPanel {
       )
       .on('click', '.typ-git-action', (event: any) => this._onActionClick(event))
       .on('click', '.typ-git-tree-item', (event: any) => this._onItemClick(event))
+      .on('click', '.typ-git-section-header', (event: any) => {
+        const header = (event.target as HTMLElement).closest('.typ-git-section-header') as HTMLElement | null
+        if (header) this._toggleSection(header)
+      })
+      .on('keydown', '.typ-git-section-header', (event: any) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return
+        const header = (event.target as HTMLElement).closest('.typ-git-section-header') as HTMLElement | null
+        if (header) {
+          event.preventDefault()
+          this._toggleSection(header)
+        }
+      })
       .on('click', '.typ-git-refresh', () => void this._refresh())
       .on('click', '.typ-git-stage-all', () => this._mutateAll('stage'))
       .on('click', '.typ-git-unstage-all', () => this._mutateAll('unstage'))
@@ -448,6 +462,14 @@ export class GitPanel extends SidebarPanel {
     item.classList.toggle('is-collapsed', !expand)
     if (children?.classList.contains('typ-git-children'))
       children.classList.toggle('is-collapsed', !expand)
+  }
+
+  /** collapse or expand a whole section (staged / working tree) */
+  private _toggleSection(header: HTMLElement) {
+    const section = header.closest('.typ-git-section') as HTMLElement | null
+    if (!section) return
+    const collapsed = section.classList.toggle('is-collapsed')
+    header.setAttribute('aria-expanded', String(!collapsed))
   }
 
   private _mutateAll(action: 'stage' | 'unstage') {

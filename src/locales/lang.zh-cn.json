@@ -3,6 +3,7 @@
   "staged": "已暂存",
   "workingTree": "更改",
   "noRepoHint": "当前文件夹不是 git 仓库。",
+  "initRepo": "初始化 Git 仓库",
   "gitNotFound": "未找到 `git`，请安装 Git 或将其加入 PATH。",
   "errorPrefix": "Git 错误：",
   "refresh": "刷新状态",

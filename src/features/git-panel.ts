@@ -34,7 +34,11 @@ export class GitPanel extends SidebarPanel {
   private worktreeCountEl!: Jq
   private commitMessageEl!: HTMLTextAreaElement
   private commitButtonEl!: Jq
+  private bodyEl!: Jq
+  private initBtnEl!: Jq
+  private noRepoEl!: Jq
   private hintEl!: Jq
+  private headerEl!: Jq
   private branchEl!: Jq
   private busy = false
   private refreshTimer: any
@@ -65,12 +69,12 @@ export class GitPanel extends SidebarPanel {
 
     this.containerEl = $(`<div id="typ-git-panel">`)
       .append(
-        $('<header class="typ-git-header">')
+        this.headerEl = $('<header class="typ-git-header">')
           .append(this.branchEl = $('<span class="typ-git-branch"></span>'))
           .append($(`<button class="typ-git-refresh" title="${escapeHtml(t().refresh)}"><i class="fa fa-refresh"></i></button>`))
           .append($(`<button class="typ-git-stage-all" title="${escapeHtml(t().stageAll)}"><i class="fa fa-plus"></i></button>`))
           .append($(`<button class="typ-git-unstage-all" title="${escapeHtml(t().unstageAll)}"><i class="fa fa-minus"></i></button>`)),
-        $('<div class="typ-git-body">')
+        this.bodyEl = $('<div class="typ-git-body">')
           .append(
             $('<div class="typ-git-commit">')
               .append(
@@ -93,6 +97,13 @@ export class GitPanel extends SidebarPanel {
                 sectionHeader(t().workingTree, this.worktreeCountEl = $('<span class="typ-git-count"></span>')),
                 this.worktreeEl = $('<div class="typ-git-list"></div>').get(0) as HTMLElement),
           ),
+        this.noRepoEl = $('<div class="typ-git-hint typ-git-no-repo"></div>')
+          .append($('<p></p>').text(t().noRepoHint))
+          .append(this.initBtnEl = $('<button class="typ-git-init-btn">')
+            .append($('<i class="fa fa-code-fork"></i>'))
+            .append($('<span>').text(t().initRepo))
+            .on('click', () => void this._initRepo()))
+          .hide(),
         this.hintEl = $('<p class="typ-git-hint"></p>').hide(),
       )
       .on('click', '.typ-git-action', (event: any) => this._onActionClick(event))
@@ -142,10 +153,13 @@ export class GitPanel extends SidebarPanel {
       if (seq !== this.refreshSeq) return
       if (!state) {
         this.current = null
-        this.showHint(this.plugin.i18n.t.noRepoHint)
+        this.showNoRepo()
         return
       }
       this.current = state
+      this.headerEl.show()
+      this.bodyEl.show()
+      this.noRepoEl.hide()
       this.hintEl.hide()
       this.branchEl.text(state.branch).attr('title', state.branch)
       this.stagedCountEl.text(state.staged.length || '')
@@ -169,7 +183,21 @@ export class GitPanel extends SidebarPanel {
     this.worktreeCountEl.text('')
     $(this.stagedEl).empty()
     $(this.worktreeEl).empty()
+    this.noRepoEl.hide()
     this.hintEl.text(text).show()
+    this._updateCommitState()
+  }
+
+  private showNoRepo() {
+    this.branchEl.text('')
+    this.stagedCountEl.text('')
+    this.worktreeCountEl.text('')
+    $(this.stagedEl).empty()
+    $(this.worktreeEl).empty()
+    this.headerEl.hide()
+    this.bodyEl.hide()
+    this.hintEl.hide()
+    this.noRepoEl.show()
     this._updateCommitState()
   }
 
@@ -184,6 +212,12 @@ export class GitPanel extends SidebarPanel {
     const hasStaged = !!this.current?.staged.length
     const hasMessage = this.commitMessageEl.value.trim().length > 0
     this.commitButtonEl.prop('disabled', this.busy || !hasStaged || !hasMessage)
+    this.initBtnEl.prop('disabled', this.busy)
+  }
+
+  private async _initRepo() {
+    if (this.busy) return
+    await this._mutate(() => this.client.init())
   }
 
   private async _commit() {

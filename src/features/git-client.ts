@@ -169,6 +169,13 @@ export class GitClient {
     return { branch, ...parsePorcelain(raw, this.repoPrefix) }
   }
 
+  /** initialize a git repository in the vault directory */
+  async init() {
+    await this.run(['init'])
+    // drop the cached "not a repo" result so the next status re-resolves it
+    this.repoReady = false
+  }
+
   async stage(paths: string[]) {
     if (!paths.length) return
     await this.run(['add', '-A', '--', ...paths])

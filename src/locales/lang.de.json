@@ -3,6 +3,7 @@
   "staged": "Bereitgestellt",
   "workingTree": "Änderungen",
   "noRepoHint": "Der aktuelle Ordner ist kein Git-Repository.",
+  "initRepo": "Git-Repository initialisieren",
   "gitNotFound": "`git` wurde im PATH nicht gefunden. Bitte Git installieren oder den Pfad einrichten.",
   "errorPrefix": "Git-Fehler:",
   "refresh": "Status aktualisieren",
